@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>done</groupId>
   <artifactId>done</artifactId>
@@ -8,6 +7,12 @@
   <name>done</name>
   <description>FIXME: write description</description>
   <url>http://example.com/FIXME</url>
+  <scm>
+    <connection>scm:git:git://github.com/fdiotalevi/done.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/fdiotalevi/done.git</developerConnection>
+    <tag>c13d44a782fd35ebb0c551f1647936e602bf29da</tag>
+    <url>https://github.com/fdiotalevi/done</url>
+  </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test</testSourceDirectory>
@@ -24,7 +29,7 @@
         <directory>resources</directory>
       </testResource>
     </testResources>
-    <directory>target</directory>
+    <directory>target/</directory>
     <outputDirectory>target/classes</outputDirectory>
   </build>
   <repositories>
@@ -121,6 +126,17 @@
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
+      <artifactId>data.json</artifactId>
+      <version>0.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ring-mock</groupId>
+      <artifactId>ring-mock</artifactId>
+      <version>0.1.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
       <artifactId>tools.nrepl</artifactId>
       <version>0.2.3</version>
       <scope>test</scope>
@@ -129,12 +145,6 @@
       <groupId>clojure-complete</groupId>
       <artifactId>clojure-complete</artifactId>
       <version>0.2.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ring-mock</groupId>
-      <artifactId>ring-mock</artifactId>
-      <version>0.1.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
