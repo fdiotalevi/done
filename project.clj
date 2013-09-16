@@ -14,6 +14,7 @@
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
                  [bouncer "0.3.0-alpha1"]
+                 [org.clojure/data.json "0.2.2"]
                  ]
   :plugins [[lein-ring "0.8.5"]]
   :ring {:handler done.handler/app}
