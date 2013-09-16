@@ -1,6 +1,9 @@
-# done
+done
+====
 
-FIXME
+A Clojure clone of idonethis.com
+
+This is mostly an ongoing experiment to learn web development with clojure
 
 ## Prerequisites
 
@@ -17,3 +20,4 @@ To start a web server for the application, run:
 ## License
 
 Copyright © 2013 FIXME
+
