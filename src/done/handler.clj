@@ -1,7 +1,8 @@
 (ns done.handler
   (:use [compojure.core]
         [bouncer.core]
-        [bouncer.validators])
+        [bouncer.validators]
+        [done.utils])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [clostache.parser :as renderer]
@@ -17,7 +18,7 @@
 
   (POST "/" [email firstname lastname password]
     (let [user {:email email :firstname firstname :lastname lastname :password password}
-           val-errors (validate user :email required :firstname required :lastname required :password required)]
+           val-errors (validate user :email valid-email :firstname required :lastname required :password required)]
       (if (empty? (val-errors 0)) (db/insert-user user) (render/error 400 val-errors)))))
 
 (defroutes app-routes
