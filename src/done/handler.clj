@@ -11,11 +11,13 @@
             ))
 
 (defroutes session-routes
-  (POST "/" [username password] (str username password)))
+  (POST "/" [email password]
+        (let [credentials {:email email :password password}
+              val-errors (validate credentials :email valid-email :password required)]
+          (if (empty? (val-errors 0)) (str email password) (render/error 400 val-errors)))))
 
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
-
   (POST "/" [email firstname lastname password]
     (let [user {:email email :firstname firstname :lastname lastname :password password}
            val-errors (validate user :email valid-email :firstname required :lastname required :password required)]
