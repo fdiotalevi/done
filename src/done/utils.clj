@@ -15,3 +15,12 @@
   {:default-message-format "%s must be a valid email address"}
   [value]
   (and (required value) (matches value #"^[^@]+@[^@\\.]+[\\.].+")))
+
+
+(defn validate-user
+  [user]
+    ((validate user :email valid-email :firstname required :lastname required :password required) 0))
+
+(defn validate-credentials
+  [credentials]
+   ((validate credentials :email valid-email :password required) 0))

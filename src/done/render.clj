@@ -4,5 +4,5 @@
 
 (defn error
   [status val-error]
-  (let [messages (val-error 0)]
+  (let [messages val-error]
     (hash-map :status status :body (json/write-str (flatten (map #(%1 1) messages))))))

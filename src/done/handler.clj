@@ -13,15 +13,15 @@
 (defroutes session-routes
   (POST "/" [email password]
         (let [credentials {:email email :password password}
-              val-errors (validate credentials :email valid-email :password required)]
-          (if (empty? (val-errors 0)) (str email password) (render/error 400 val-errors)))))
+              val-errors (validate-credentials credentials)]
+          (if (empty? val-errors) (str email password) (render/error 400 val-errors)))))
 
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
   (POST "/" [email firstname lastname password]
     (let [user {:email email :firstname firstname :lastname lastname :password password}
-           val-errors (validate user :email valid-email :firstname required :lastname required :password required)]
-      (if (empty? (val-errors 0)) (db/insert-user user) (render/error 400 val-errors)))))
+           val-errors (validate-user user)]
+      (if (empty? val-errors) (db/insert-user user) (render/error 400 val-errors)))))
 
 (defroutes app-routes
   (GET "/" [] (renderer/render-resource "templates/index.mustache" {:var "filippo"}))
