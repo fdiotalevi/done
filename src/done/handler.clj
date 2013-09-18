@@ -14,7 +14,7 @@
   (POST "/" [email password]
         (let [credentials {:email email :password password}
               val-errors (validate-credentials credentials)]
-          (if (empty? val-errors) (str email password) (render/error 400 val-errors)))))
+          (if (empty? val-errors) (db/verify-credentials credentials) (render/error 400 val-errors)))))
 
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))

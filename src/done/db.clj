@@ -39,3 +39,10 @@
 (defn insert-user
   [user-map]
   (jdbc/insert! mysql :user user-map))
+
+(defn verify-credentials
+  [credentials]
+  (jdbc/query mysql
+    (let [rows (sql/select * :user (sql/where
+       {:email (credentials :email) :password (credentials :password)}))]
+      rows)))
