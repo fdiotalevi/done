@@ -14,7 +14,12 @@
   (POST "/" [email password]
         (let [credentials {:email email :password password}
               val-errors (validate-credentials credentials)]
-          (if (empty? val-errors) (db/verify-credentials credentials) (render/error 400 val-errors)))))
+          (if (empty? val-errors)
+            (let [ver-cred (db/verify-credentials credentials)]
+              (case (ver-cred :status)
+                "ok" (ver-cred :rows)
+                "failure" (render/error 500 {:error "Error connecting to the database"})))
+            (render/error 400 val-errors)))))
 
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
@@ -26,7 +31,8 @@
         (let [ret-status ((db/insert-user user) :status)]
           (case ret-status
             "ok" ""
-            "duplicate" (render/error 409 {:error "Email already exists"})))
+            "duplicate" (render/error 409 {:error "Email already exists"})
+            "failure" (render/error 500 {:error "Error connecting to the database"})))
         (render/error 400 val-errors)))))
 
 (defroutes app-routes

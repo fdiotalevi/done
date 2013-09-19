@@ -1,6 +1,7 @@
 (ns done.db
   (:import [com.jolbox.bonecp BoneCPDataSource]
-           [com.mysql.jdbc.exceptions.jdbc4 MySQLIntegrityConstraintViolationException])
+           [com.mysql.jdbc.exceptions.jdbc4 MySQLIntegrityConstraintViolationException]
+           [java.sql SQLException])
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.java.jdbc.sql :as sql])
   )
@@ -41,11 +42,14 @@
   [user-map]
   (try
     (do (jdbc/insert! mysql :user user-map) {:status "ok"})
-    (catch MySQLIntegrityConstraintViolationException e (hash-map :status "duplicate"))))
+    (catch MySQLIntegrityConstraintViolationException e (hash-map :status "duplicate"))
+    (catch SQLException e (hash-map :status "failure"))))
 
 (defn verify-credentials
   [credentials]
   (jdbc/query mysql
-    (let [rows (sql/select * :user (sql/where
-       {:email (credentials :email) :password (credentials :password)}))]
-      rows)))
+    (try
+      (let [rows (sql/select * :user (sql/where
+                                      {:email (credentials :email) :password (credentials :password)}))]
+        (hash-map :status "ok" :rows rows))
+      (catch SQLException s (hash-map :status "failure")))))
