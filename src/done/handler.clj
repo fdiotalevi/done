@@ -18,10 +18,16 @@
 
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
+
   (POST "/" [email firstname lastname password]
     (let [user {:email email :firstname firstname :lastname lastname :password password}
            val-errors (validate-user user)]
-      (if (empty? val-errors) (db/insert-user user) (render/error 400 val-errors)))))
+      (if (empty? val-errors)
+        (let [ret-status ((db/insert-user user) :status)]
+          (case ret-status
+            "ok" ""
+            "duplicate" (render/error 409 {:error "Email already exists"})))
+        (render/error 400 val-errors)))))
 
 (defroutes app-routes
   (GET "/" [] (renderer/render-resource "templates/index.mustache" {:var "filippo"}))

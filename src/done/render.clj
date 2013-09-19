@@ -3,6 +3,7 @@
 
 
 (defn error
+  "val-error is an hashmap. Keys are ininfluent, values are the error messages"
   [status val-error]
   (let [messages val-error]
     (hash-map :status status :body (json/write-str (flatten (map #(%1 1) messages))))))
