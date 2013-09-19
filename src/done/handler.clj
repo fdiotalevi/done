@@ -16,9 +16,11 @@
               val-errors (validate-credentials credentials)]
           (if (empty? val-errors)
             (let [ver-cred (db/verify-credentials credentials)]
-              (case (ver-cred :status)
-                "ok" (ver-cred :rows)
-                "failure" (render/error 500 {:error "Error connecting to the database"})))
+              (do
+                (case (ver-cred :status)
+                  "ok" (ver-cred :rows)
+                  "not-found" {:status 404 :body "User not found or credentials incorrect"}
+                  "failure" (render/error 500 {:error "Error connecting to the database"}))))
             (render/error 400 val-errors)))))
 
 (defroutes users-routes

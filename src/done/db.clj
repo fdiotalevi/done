@@ -47,9 +47,10 @@
 
 (defn verify-credentials
   [credentials]
-  (jdbc/query mysql
-    (try
-      (let [rows (sql/select * :user (sql/where
-                                      {:email (credentials :email) :password (credentials :password)}))]
-        (hash-map :status "ok" :rows rows))
-      (catch SQLException s (hash-map :status "failure")))))
+  (try
+    (let [rows (jdbc/query mysql (sql/select * :user (sql/where
+       {:email (credentials :email) :password (credentials :password)})))]
+      (if (empty? rows)
+        {:status "not-found"}
+        {:status "ok" :rows rows}))
+    (catch SQLException e {:status "failure"})))
