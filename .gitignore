@@ -11,3 +11,5 @@ manifest.txt
 atlassian-ide-plugin.xml
 nbactions.xml
 .lein-failures
+.lein-repl-history
+.nrepl-port
