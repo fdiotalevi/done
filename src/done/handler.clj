@@ -8,6 +8,7 @@
             [clostache.parser :as renderer]
             [done.db :as db]
             [done.render :as render]
+            [done.session :as session]
             ))
 
 (defroutes session-routes
@@ -18,10 +19,16 @@
             (let [ver-cred (db/verify-credentials credentials)]
               (do
                 (case (ver-cred :status)
-                  "ok" (ver-cred :rows)
+                  "ok" {:cookies {"session" (session/create-session credentials)}}
                   "not-found" {:status 404 :body "User not found or credentials incorrect"}
                   "failure" (render/error 500 {:error "Error connecting to the database"}))))
-            (render/error 400 val-errors)))))
+            (render/error 400 val-errors))))
+  
+  (GET "/me" {cookies :cookies}
+       (let [session (cookies "session")]
+         (if (nil? session)
+           {:status 404 :body "Session not found"}
+           (session/expand-session (session :value))))))
 
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
