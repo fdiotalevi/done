@@ -32,9 +32,13 @@
 
 (defroutes dones-routes
   (POST "/" {{text :text} :params cookies :cookies}
-        (let [done {:text text :date today-date}]
-          (str done))
-        ))
+        (let [session (cookies "session")]
+          (if (nil? session)
+            {:status 403 :body "Not authorised"}
+            (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}]
+              (done)
+              )))))
+
 
 
 (defroutes users-routes

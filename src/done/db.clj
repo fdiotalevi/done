@@ -54,3 +54,9 @@
         {:status "not-found"}
         {:status "ok" :rows rows}))
     (catch SQLException e {:status "failure"})))
+
+(defn insert-done
+  [done-map]
+  (try
+    (do (jdbc/insert! :done done-map) {:status "ok"})
+    (catch SQLException e (hash-map :status "failure"))))
