@@ -24,3 +24,9 @@
 (defn validate-credentials
   [credentials]
    ((validate credentials :email valid-email :password required) 0))
+
+(defn today-date
+  []
+  (..
+   (java.text.SimpleDateFormat. "yyyyMMdd")
+   (format (java.util.Date.))))

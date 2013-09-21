@@ -30,6 +30,13 @@
            {:status 404 :body "Session not found"}
            (session/expand-session (session :value))))))
 
+(defroutes dones-routes
+  (POST "/" {{text :text} :params cookies :cookies}
+        (let [done {:text text :date today-date}]
+          (str done))
+        ))
+
+
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
 
@@ -48,6 +55,7 @@
   (GET "/" [] (renderer/render-resource "templates/index.mustache" {:var "filippo"}))
   (context "/api/sessions" [] session-routes)
   (context "/api/users" [] users-routes)
+  (context "/api/dones" [] dones-routes)
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -1,7 +1,6 @@
 (ns done.test.utils
   (:use [clojure.test]
-        [done.utils]
-   ))
+        [done.utils]))
 
 (deftest can-validate-user
   (testing "can validate valid users"
@@ -17,3 +16,6 @@
   (testing "can validate valid credentials"
     (is (empty? (validate-credentials {:email "jhj@fds.com" :password "p"})))))
     
+(deftest can-create-date
+  (testing "will generate a 8 char string"
+    (= 8 (count (today-date)))))
