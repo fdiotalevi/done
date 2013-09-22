@@ -38,11 +38,14 @@
           (if (nil? session)
             {:status 403 :body "Not authorised"}
             (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}
-                  result (db/insert-done done)]
-              (case (result :status)
-                "ok" {:status 200 :body (str done)}
-                "failure" {:status :500 :body "Error connecting to the database"})
+                  val-errors (validate-done done)]
+              (if (not (empty? val-errors))
+                (render/error 400 val-errors)
+                (case ((db/insert-done done) :status)
+                  "ok" {:status 200 :body (str done)}
+                  "failure" {:status :500 :body "Error connecting to the database"}))
               ))))
+
   (DELETE "/:id" {{id :id} :params cookies :cookies}
           (let [session (cookies "session")]
             (if (nil? session)

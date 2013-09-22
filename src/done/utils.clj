@@ -25,6 +25,10 @@
   [credentials]
    ((validate credentials :email valid-email :password required) 0))
 
+(defn validate-done
+  [done]
+  ((validate done :text required :date required :email valid-email) 0))
+
 (defn today-date
   []
   (..
