@@ -58,5 +58,5 @@
 (defn insert-done
   [done-map]
   (try
-    (do (jdbc/insert! :done done-map) {:status "ok"})
+    (do (jdbc/insert! mysql :done done-map) {:status "ok"})
     (catch SQLException e (hash-map :status "failure"))))

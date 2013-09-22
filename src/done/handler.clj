@@ -35,8 +35,11 @@
         (let [session (cookies "session")]
           (if (nil? session)
             {:status 403 :body "Not authorised"}
-            (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}]
-              (done)
+            (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}
+                  result (db/insert-done done)]
+              (case (result :status)
+                "ok" {:status 200 :body (str done)}
+                "failure" {:status :500 :body "Error connecting to the database"})
               )))))
 
 
