@@ -40,8 +40,15 @@
               (case (result :status)
                 "ok" {:status 200 :body (str done)}
                 "failure" {:status :500 :body "Error connecting to the database"})
-              )))))
-
+              ))))
+  (DELETE "/:id" {{id :id} :params cookies :cookies}
+          (let [session (cookies "session")]
+            (if (nil? session)
+              {:status 403 :body "Not authorised"}
+              (let [result (db/delete-done id)]
+                (case (result :status)
+                  "ok" ""
+                  "failure" {:status 500 :body "Error while deleting resource"}))))))
 
 
 (defroutes users-routes

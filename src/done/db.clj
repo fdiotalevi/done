@@ -60,3 +60,10 @@
   (try
     (do (jdbc/insert! mysql :done done-map) {:status "ok"})
     (catch SQLException e (hash-map :status "failure"))))
+
+(defn delete-done
+  [id]
+  (try (do
+         (jdbc/delete! mysql :done (sql/where {:id id}))
+         (hash-map :status "ok"))
+       (catch SQLException e (hash-map :status "failure"))))
