@@ -11,6 +11,7 @@
             [done.session :as session]
             ))
 
+; routes to create a session (login)
 (defroutes session-routes
   (POST "/" [email password]
         (let [credentials {:email email :password password}
@@ -30,6 +31,7 @@
            {:status 404 :body "Session not found"}
            (session/expand-session (session :value))))))
 
+; routes to create and delete 'dones'
 (defroutes dones-routes
   (POST "/" {{text :text} :params cookies :cookies}
         (let [session (cookies "session")]
@@ -51,6 +53,7 @@
                   "failure" {:status 500 :body "Error while deleting resource"}))))))
 
 
+; routes to create users
 (defroutes users-routes
   (GET "/:username" [username] (str "hello " username))
 
