@@ -27,8 +27,7 @@
   
   (GET "/me" {cookies :cookies}
        (let [session (cookies "session")]
-         (if (nil? session)
-           {:status 404 :body "Session not found"}
+         (if-session-valid session
            (session/expand-session (session :value))))))
 
 ; routes to create and delete 'dones'
