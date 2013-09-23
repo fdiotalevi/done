@@ -34,3 +34,9 @@
   (..
    (java.text.SimpleDateFormat. "yyyyMMdd")
    (format (java.util.Date.))))
+
+(defmacro if-session-valid
+  [session body]
+  `(if (nil? ~session)
+      {:status 403 :body "Not authorised"}
+      ~body))

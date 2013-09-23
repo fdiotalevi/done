@@ -35,8 +35,7 @@
 (defroutes dones-routes
   (GET "/" {cookies :cookies}
        (let [session (cookies "session")]
-         (if (nil? session)
-           {:status 403 :body "Not authorised"}
+         (if-session-valid session
            (let [result (db/get-dones (session/expand-session (session :value)))]
              (case (result :status)
                "ok" (render/dones (result :rows))
@@ -44,8 +43,7 @@
 
   (POST "/" {{text :text} :params cookies :cookies}
         (let [session (cookies "session")]
-          (if (nil? session)
-            {:status 403 :body "Not authorised"}
+          (if-session-valid session
             (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}
                   val-errors (validate-done done)]
               (if (not (empty? val-errors))
@@ -57,8 +55,7 @@
 
   (DELETE "/:id" {{id :id} :params cookies :cookies}
           (let [session (cookies "session")]
-            (if (nil? session)
-              {:status 403 :body "Not authorised"}
+            (if-session-valid session
               (let [result (db/delete-done id)]
                 (case (result :status)
                   "ok" ""
