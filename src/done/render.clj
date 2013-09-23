@@ -8,3 +8,7 @@
   (let [messages val-error]
     (hash-map :status status :body (json/write-str (flatten (map #(%1 1) messages))))))
 
+(defn dones
+  "render a list of dones"
+  [dones]
+  (json/write-str dones))

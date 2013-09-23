@@ -33,6 +33,15 @@
 
 ; routes to create and delete 'dones'
 (defroutes dones-routes
+  (GET "/" {cookies :cookies}
+       (let [session (cookies "session")]
+         (if (nil? session)
+           {:status 403 :body "Not authorised"}
+           (let [result (db/get-dones (session/expand-session (session :value)))]
+             (case (result :status)
+               "ok" (render/dones (result :rows))
+               "failure" {:status 500 :body "Error while connecting to the database"})))))
+
   (POST "/" {{text :text} :params cookies :cookies}
         (let [session (cookies "session")]
           (if (nil? session)

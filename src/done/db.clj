@@ -67,3 +67,13 @@
          (jdbc/delete! mysql :done (sql/where {:id id}))
          (hash-map :status "ok"))
        (catch SQLException e (hash-map :status "failure"))))
+
+(defn get-dones
+  [email]
+  (try
+    (let [rows (jdbc/query mysql (sql/select * :done (sql/where
+       {:email email}) (sql/order-by :date)))]
+      (if (empty? rows)
+        {:status "not-found"}
+        {:status "ok" :rows rows}))
+    (catch SQLException e {:status "failure"})))
