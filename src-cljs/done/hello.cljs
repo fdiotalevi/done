@@ -1,3 +1,4 @@
-(ns done.hello)
+(ns done.hello
+  (:require [goog.dom :as goog.dom]))
 
-(js/alert "Hello from ClojureScript!")
+(goog.dom/setTextContent (goog.dom/getElement "test") "hola")
