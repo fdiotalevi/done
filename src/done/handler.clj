@@ -19,10 +19,9 @@
           (if (empty? val-errors)
             (let [ver-cred (db/verify-credentials credentials)]
               (do
-                (case (ver-cred :status)
-                  "ok" {:cookies {"session" (session/create-session credentials)}}
-                  "not-found" {:status 404 :body "User not found or credentials incorrect"}
-                  "failure" (render/error 500 {:error "Error connecting to the database"}))))
+                (check-status-and
+                 (ver-cred :status)
+                 {:cookies {"session" (session/create-session credentials)}})))
             (render/error 400 val-errors))))
   
   (GET "/me" {cookies :cookies}
@@ -36,9 +35,9 @@
        (let [session (cookies "session")]
          (if-session-valid session
            (let [result (db/get-dones (session/expand-session (session :value)))]
-             (case (result :status)
-               "ok" (render/dones (result :rows))
-               "failure" {:status 500 :body "Error while connecting to the database"})))))
+             (check-status-and
+              (result :status)
+              (render/dones (result :rows)))))))
 
   (POST "/" {{text :text} :params cookies :cookies}
         (let [session (cookies "session")]
@@ -47,19 +46,17 @@
                   val-errors (validate-done done)]
               (if (not (empty? val-errors))
                 (render/error 400 val-errors)
-                (case ((db/insert-done done) :status)
-                  "ok" {:status 200 :body (str done)}
-                  "failure" {:status :500 :body "Error connecting to the database"}))
-              ))))
+                (check-status-and
+                 ((db/insert-done done) :status)
+                 {:status 200 :body (str done)}))))))
 
   (DELETE "/:id" {{id :id} :params cookies :cookies}
           (let [session (cookies "session")]
             (if-session-valid session
               (let [result (db/delete-done id)]
-                (case (result :status)
-                  "ok" ""
-                  "failure" {:status 500 :body "Error while deleting resource"}))))))
-
+                (check-status-and
+                 (result :status)
+                 ""))))))
 
 ; routes to create users
 (defroutes users-routes
@@ -70,10 +67,9 @@
            val-errors (validate-user user)]
       (if (empty? val-errors)
         (let [ret-status ((db/insert-user user) :status)]
-          (case ret-status
-            "ok" ""
-            "duplicate" (render/error 409 {:error "Email already exists"})
-            "failure" (render/error 500 {:error "Error connecting to the database"})))
+          (check-status-and
+           ret-status
+           ""))
         (render/error 400 val-errors)))))
 
 (defroutes app-routes

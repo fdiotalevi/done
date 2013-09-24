@@ -40,3 +40,11 @@
   `(if (nil? ~session)
       {:status 403 :body "Not authorised"}
       ~body))
+
+(defmacro check-status-and
+  [status result]
+  `(case ~status
+     "ok" ~result
+     "not-found" {:status 404 :body "Entity not found"}
+     "failure" {:status 500 :body "Unexpected error while performing the operation"}
+     "duplicate" {:status 409 :body "This entity already exists"}))
