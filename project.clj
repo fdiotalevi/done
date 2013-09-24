@@ -16,13 +16,14 @@
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]
                  [bouncer "0.3.0-alpha1"]
-                 [org.clojure/data.json "0.2.2"]]
+                 [org.clojure/data.json "0.2.2"]
+                 [jayq "2.4.0"]]
   :plugins [[lein-ring "0.8.5"]
             [lein-cljsbuild "0.3.3"]]
   :cljsbuild {
     :builds [{:source-paths ["src-cljs"]
               :compiler {:output-to "resources/public/js/main.js"
-                         :optimizations :simple}}]}
+                         :optimizations :whitespace}}]}
   :ring {:handler done.handler/app}
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.5"]]}})
