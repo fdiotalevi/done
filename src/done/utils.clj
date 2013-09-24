@@ -1,6 +1,7 @@
 (ns done.utils
   (:use [bouncer.core]
-        [bouncer.validators]))
+        [bouncer.validators])
+  (:require [done.render :as render]))
 
 ; various bits and pieces here
 
@@ -48,3 +49,9 @@
      "not-found" {:status 404 :body "Entity not found"}
      "failure" {:status 500 :body "Unexpected error while performing the operation"}
      "duplicate" {:status 409 :body "This entity already exists"}))
+
+(defmacro if-validate
+  [validation body]
+  `(if (empty? ~validation)
+    ~body
+    (render/error 400 ~validation)))

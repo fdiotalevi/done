@@ -14,15 +14,12 @@
 ; routes to create a session (login)
 (defroutes session-routes
   (POST "/" [email password]
-        (let [credentials {:email email :password password}
-              val-errors (validate-credentials credentials)]
-          (if (empty? val-errors)
+        (let [credentials {:email email :password password}]
+          (if-validate (validate-credentials credentials)
             (let [ver-cred (db/verify-credentials credentials)]
-              (do
-                (check-status-and
-                 (ver-cred :status)
-                 {:cookies {"session" (session/create-session credentials)}})))
-            (render/error 400 val-errors))))
+              (check-status-and
+               (ver-cred :status)
+               {:cookies {"session" (session/create-session credentials)}})))))
   
   (GET "/me" {cookies :cookies}
        (let [session (cookies "session")]
@@ -42,10 +39,8 @@
   (POST "/" {{text :text} :params cookies :cookies}
         (let [session (cookies "session")]
           (if-session-valid session
-            (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}
-                  val-errors (validate-done done)]
-              (if (not (empty? val-errors))
-                (render/error 400 val-errors)
+            (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}]
+              (if-validate (validate-done done)
                 (check-status-and
                  ((db/insert-done done) :status)
                  {:status 200 :body (str done)}))))))
@@ -63,14 +58,12 @@
   (GET "/:username" [username] (str "hello " username))
 
   (POST "/" [email firstname lastname password]
-    (let [user {:email email :firstname firstname :lastname lastname :password password}
-           val-errors (validate-user user)]
-      (if (empty? val-errors)
+    (let [user {:email email :firstname firstname :lastname lastname :password password}]
+      (if-validate (validate-user user)
         (let [ret-status ((db/insert-user user) :status)]
           (check-status-and
            ret-status
-           ""))
-        (render/error 400 val-errors)))))
+           ""))))))
 
 (defroutes app-routes
   (GET "/" [] (renderer/render-resource "templates/index.mustache" {:var "filippo"}))
