@@ -11,4 +11,4 @@
 (defn dones
   "render a list of dones"
   [dones]
-  (json/write-str dones))
+  (json/write-str {:dones dones}))

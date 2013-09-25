@@ -19,7 +19,10 @@
             (let [ver-cred (db/verify-credentials credentials)]
               (check-status-and
                (ver-cred :status)
-               {:cookies {"session" (session/create-session credentials)}})))))
+               {:cookies {"session" {:path "/" :value (session/create-session credentials)}}})))))
+
+  (DELETE "/me" []
+          {:cookies {"session" {:value "" :max-age 0 :path "/" :expires "Thu, 01 Jan 1970 00:00:00 GMT"}}})
   
   (GET "/me" {cookies :cookies}
        (let [session (cookies "session")]
@@ -70,6 +73,7 @@
   (context "/api/sessions" [] session-routes)
   (context "/api/users" [] users-routes)
   (context "/api/dones" [] dones-routes)
+  (GET "/api/test" [] (str "{\"ping\": \"test\"}"))
   (route/resources "/")
   (route/not-found "Not Found"))
 
