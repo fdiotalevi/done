@@ -1,5 +1,9 @@
 (ns done.hello
-  (:use [jayq.core :only [$ css html]]))
+  (:require [jayq.core :as jq]))
 
+(defn show-login [] (log "log in"))
 
-(.log js/console $)
+(jq/ajax "/api/sessions/me" {:success show-login :error show-login} )
+
+;(log (str "a"))
+
