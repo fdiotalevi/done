@@ -17,9 +17,8 @@
         (let [credentials {:email email :password password}]
           (if-validate (validate-credentials credentials)
             (let [ver-cred (db/verify-credentials credentials)]
-              (check-status-and
-               (ver-cred :status)
-               {:cookies {"session" {:path "/" :value (session/create-session credentials)}}})))))
+              (check-status (ver-cred :status)
+               :and-return {:cookies {"session" {:path "/" :value (session/create-session credentials)}}})))))
 
   (DELETE "/me" []
           {:cookies {"session" {:value "" :max-age 0 :path "/" :expires "Thu, 01 Jan 1970 00:00:00 GMT"}}})
@@ -35,26 +34,23 @@
        (let [session (cookies "session")]
          (if-session-valid session
            (let [result (db/get-dones (session/expand-session (session :value)))]
-             (check-status-and
-              (result :status)
-              (render/dones (result :rows)))))))
+             (check-status (result :status)
+              :and-return (render/dones (result :rows)))))))
 
   (POST "/" {{text :text} :params cookies :cookies}
         (let [session (cookies "session")]
           (if-session-valid session
             (let [done {:text text :date (today-date) :email (session/expand-session (session :value))}]
               (if-validate (validate-done done)
-                (check-status-and
-                 ((db/insert-done done) :status)
-                 {:status 200 :body (str done)}))))))
+                (check-status ((db/insert-done done) :status)
+                 :and-return {:status 200 :body (str done)}))))))
 
   (DELETE "/:id" {{id :id} :params cookies :cookies}
           (let [session (cookies "session")]
             (if-session-valid session
               (let [result (db/delete-done id)]
-                (check-status-and
-                 (result :status)
-                 ""))))))
+                (check-status (result :status)
+                 :and-return ""))))))
 
 ; routes to create users
 (defroutes users-routes
@@ -64,9 +60,8 @@
     (let [user {:email email :firstname firstname :lastname lastname :password password}]
       (if-validate (validate-user user)
         (let [ret-status ((db/insert-user user) :status)]
-          (check-status-and
-           ret-status
-           ""))))))
+          (check-status ret-status
+           :and-return ""))))))
 
 (defroutes app-routes
   (GET "/" [] (renderer/render-resource "templates/index.mustache" {:var "filippo"}))

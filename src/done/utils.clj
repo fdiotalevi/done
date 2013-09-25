@@ -42,8 +42,8 @@
       {:status 403 :body "Not authorised"}
       ~body))
 
-(defmacro check-status-and
-  [status result]
+(defmacro check-status
+  [status and-return result]
   `(case ~status
      "ok" ~result
      "not-found" {:status 404 :body "Entity not found"}
