@@ -1,3 +1,14 @@
+body {
+    padding-top: 50px;
+}
 #login,#logout {
     display: none;
+}
+.login-header {
+    padding: 10px 200px 10px 200px;
+    color: white;
+    text-align: center;
+}
+#content {
+    padding: 30px 100px 30px 100px;
 }
