@@ -27,11 +27,19 @@
 
 
 <script id="dones-template" type="text/template">
+<form id="insert-done-form">
+  What have you done? 
+  <textarea name="text"></textarea>
+  <input type="submit">
+</form>
+
+<h2>Dones so far</h2>
 <table>
 [[#dones]]
 <tr>
   <td>[[date]]</td>
   <td>[[text]]</td>
+  <td><a href="#" data-delete="[[id]]" class="delete">Delete</a>
 </tr>
 [[/dones]] 
 </table>

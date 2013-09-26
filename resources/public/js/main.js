@@ -4,13 +4,39 @@
         var template = $(templateId).html();
         return Mustache.compile(template,  ["[[", "]]"])(jsonObj);
     },
-    Dones = function() {
+    Urls = {
+        dones: '/api/dones/',
+        current_session: '/api/sessions/me',
+        sessions: 'api/sessions'
+    },
+    Dones = function(app) {
         var _this = this;
+
+        this.init = function() {
+            $('#content').on('submit', '#insert-done-form', function() {
+                $.ajax({
+                    url: app.urls.dones,
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: _this.show
+                });
+                return false;
+            });
+            $('#content').on('click', '.delete', function() {
+                var id = $(this).attr('data-delete');
+                $.ajax({
+                    url: app.urls.dones + id,
+                    type: 'DELETE',
+                    success: _this.show
+                });
+                return false;
+            });
+        };
 
         this.show = function() {
             $.ajax({
                 type: 'GET',
-                url: '/api/dones',
+                url: app.urls.dones,
                 dataType: 'json',
                 success: function(data) { 
                     $('#content').html(_compileTemplate('#dones-template', data));
@@ -26,7 +52,7 @@
         var _this = this;
 
         this.render = function() {
-            $.ajax("/api/sessions/me")
+            $.ajax(app.urls.current_session)
                 .done(function() { 
                     $('#login').hide(); 
                     $('#logout').show();
@@ -41,7 +67,7 @@
             $('#login-form').on('submit', function() {
                 $.ajax({
                     type: 'POST',
-                    url: '/api/sessions',
+                    url: app.urls.sessions,
                     data: $(this).serialize(),
                     success: _this.render
                 });
@@ -51,7 +77,7 @@
             $('#logout-link').on('click', function() {
                 $.ajax({
                     type: 'DELETE',
-                    url: '/api/sessions/me',
+                    url: app.urls.current_session,
                     success: _this.render
                 });
                 app.dones.delete();
@@ -60,10 +86,10 @@
         }
     },
     startup = function() {
-        var dones = new Dones();
-        var app = {dones:dones};
-        var login = new LoginLogout(app);
+        var dones = new Dones({urls: Urls});
+        dones.init();
 
+        var login = new LoginLogout({dones:dones, urls:Urls});
         login.init();
         login.render();
     };
