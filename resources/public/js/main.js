@@ -10,8 +10,9 @@
         sessions: 'api/sessions'
     },
     Dones = function(app) {
-        var _this = this;
-
+        var _this = this,
+            _initialContent = $('#content').html();
+        
         this.init = function() {
             $('#content').on('submit', '#insert-done-form', function() {
                 $.ajax({
@@ -45,7 +46,7 @@
         };
 
         this.delete = function() {
-            $('#content').html('');  
+            $('#content').html(_initialContent);  
         };
     },
     LoginLogout = function(app) {

@@ -1,6 +1,8 @@
 body {
     padding-top: 50px;
+    font-family: 'Libre Baskerville', serif;
 }
+
 #login,#logout {
     display: none;
 }
@@ -9,6 +11,28 @@ body {
     color: white;
     text-align: center;
 }
+.login-header input[type="text"], input[type="password"] {
+    width:180px;
+    margin-right: 15px;
+    margin-left: 15px;
+    font-family: 'Libre Baskerville', serif;
+}
+.login-header label {
+    font-size: 16px;
+    font-weight: normal;
+}
+.login-header a, a:visited {
+    font-size: 16px;
+    font-weight: normal;
+    color: white;
+}
+
 #content {
-    padding: 30px 100px 30px 100px;
+    width: 600px;
+    margin: 50px auto 50px auto;
+}
+
+.done-form label {
+    font-size: 16px;
+    margin-bottom: 10px;
 }
