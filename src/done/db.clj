@@ -3,16 +3,17 @@
            [com.mysql.jdbc.exceptions.jdbc4 MySQLIntegrityConstraintViolationException]
            [java.sql SQLException])
   (:require [clojure.java.jdbc :as jdbc]
-            [clojure.java.jdbc.sql :as sql])
+            [clojure.java.jdbc.sql :as sql]
+            [done.config :as config])
   )
+
 
 (def db-spec
   {:classname "com.mysql.jdbc.Driver"
    :subprotocol "mysql"
-   :subname "//127.0.0.1:3306/done"
-   :user "root"
-   :password "root"})
-
+   :subname  (config/get-string "database.subname")
+   :user  (config/get-string "database.user")
+   :password  (config/get-string "database.password")})
 
 (defn pool
   [spec]
