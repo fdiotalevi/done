@@ -73,7 +73,7 @@
   [email]
   (try
     (let [rows (jdbc/query mysql (sql/select * :done (sql/where
-       {:email email}) (sql/order-by :date)))]
+        {:email email}) (sql/order-by {:date :desc})))]
       (if (empty? rows)
         {:status "ok" :rows []}
         {:status "ok" :rows rows}))
