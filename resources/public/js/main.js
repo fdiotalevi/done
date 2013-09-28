@@ -11,7 +11,14 @@
     },
     Dones = function(app) {
         var _this = this,
-            _initialContent = $('#content').html();
+            _initialContent = $('#content').html(),
+            _prettifyDates = function(selector) {
+                $(selector).each(function() {
+                    var element = $(this);
+                    var date = moment(element.html(), "YYYYMDD");
+                    element.html(date.format('dddd, MMMM Do YYYY'));
+                });
+            };
         
         this.init = function() {
             $('#content').on('submit', '#insert-done-form', function() {
@@ -41,6 +48,7 @@
                 dataType: 'json',
                 success: function(data) { 
                     $('#content').html(_compileTemplate('#dones-template', data));
+                    _prettifyDates('#content .date');
                 }
             });
         };
