@@ -64,7 +64,8 @@
            :and-return ""))))))
 
 (defroutes app-routes
-  (GET "/" [] (renderer/render-resource "templates/index.mustache" {:var "filippo"}))
+  (GET "/" [] (renderer/render-resource "templates/index.mustache" {}))
+  (GET "/register" [] (renderer/render-resource "templates/register.mustache" {}))
   (context "/api/sessions" [] session-routes)
   (context "/api/users" [] users-routes)
   (context "/api/dones" [] dones-routes)

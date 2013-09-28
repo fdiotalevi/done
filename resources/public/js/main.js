@@ -73,7 +73,8 @@
                 });
         },
         this.init = function() {
-            $('#login-form').on('submit', function() {
+            $('#login-form').on('submit', function(event) {
+                console.log($("#login-form input[type=submit][clicked=true]").id);
                 $.ajax({
                     type: 'POST',
                     url: app.urls.sessions,
