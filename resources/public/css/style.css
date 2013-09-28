@@ -31,7 +31,12 @@ body {
     width: 600px;
     margin: 50px auto 50px auto;
 }
-
+#content h1 {
+    margin: 20px 0 50px 0;
+}
+#content a, a:visited {
+    color: black;
+}
 .done-form label {
     font-size: 16px;
     margin-bottom: 10px;
