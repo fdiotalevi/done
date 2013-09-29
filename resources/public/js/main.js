@@ -7,7 +7,8 @@
     Urls = {
         dones: '/api/dones/',
         current_session: '/api/sessions/me',
-        sessions: 'api/sessions'
+        sessions: 'api/sessions',
+        users: 'api/users'
     },
     Dones = function(app) {
         var _this = this,
@@ -58,7 +59,10 @@
         };
     },
     LoginLogout = function(app) {
-        var _this = this;
+        var _this = this,
+            _ok_feedback = function() {
+            $('#content').html('Thanks, your account has been created. <br><br><br> You can <a href="/">login</a> now');
+        };
 
         this.render = function() {
             $.ajax(app.urls.current_session)
@@ -73,8 +77,16 @@
                 });
         },
         this.init = function() {
+            $('#register-form').on('submit', function() {
+                $.ajax({
+                    type: 'POST',
+                    url: app.urls.users,
+                    data: $(this).serialize(),
+                    success: _ok_feedback
+                });
+                return false;
+            });
             $('#login-form').on('submit', function(event) {
-                console.log($("#login-form input[type=submit][clicked=true]").id);
                 $.ajax({
                     type: 'POST',
                     url: app.urls.sessions,
