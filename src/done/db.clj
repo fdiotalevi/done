@@ -1,7 +1,8 @@
 (ns done.db
   (:import [com.jolbox.bonecp BoneCPDataSource]
            [com.mysql.jdbc.exceptions.jdbc4 MySQLIntegrityConstraintViolationException]
-           [java.sql SQLException])
+           [java.sql SQLException]
+           [com.lambdaworks.crypto SCryptUtil])
   (:require [clojure.java.jdbc :as jdbc]
             [clojure.java.jdbc.sql :as sql]
             [done.config :as config])
@@ -39,19 +40,29 @@
 
 (def mysql @pooled-db)
 
+(def N 16384)
+(def r 16)
+(def p 1)
+
+(defn- create-hash [something] (SCryptUtil/scrypt something N r p))
+(defn- check-hash [something hashed-something]
+  (SCryptUtil/check something hashed-something))
+
 (defn insert-user
-  [user-map]
-  (try
-    (do (jdbc/insert! mysql :user user-map) {:status "ok"})
-    (catch MySQLIntegrityConstraintViolationException e (hash-map :status "duplicate"))
-    (catch SQLException e (hash-map :status "failure"))))
+  [user]
+  (let [hashed-password (create-hash (user :password))
+        user-map (assoc user :password hashed-password)]
+    (try
+      (do (jdbc/insert! mysql :user user-map) {:status "ok"})
+      (catch MySQLIntegrityConstraintViolationException e (hash-map :status "duplicate"))
+      (catch SQLException e (hash-map :status "failure")))))
 
 (defn verify-credentials
   [credentials]
   (try
     (let [rows (jdbc/query mysql (sql/select * :user (sql/where
-       {:email (credentials :email) :password (credentials :password)})))]
-      (if (empty? rows)
+       {:email (credentials :email)})))]
+      (if (or (empty? rows) (not (check-hash (credentials :password) ((first rows) :password))))
         {:status "not-found"}
         {:status "ok" :rows rows}))
     (catch SQLException e {:status "failure"})))
