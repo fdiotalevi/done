@@ -28,5 +28,5 @@ To start a web server for the application, run:
 
 Copyright © 2013 Filippo Diotalevi 
 
-This softawre is licensed under the terms of Apache Software License v.2.0.  See LICENSE file
+This software is licensed under the terms of Apache Software License v.2.0.  See LICENSE file
 
