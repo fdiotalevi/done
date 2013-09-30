@@ -32,12 +32,15 @@
                 return false;
             });
             $('#content').on('click', '.delete', function() {
+                var _confirm = confirm('Are you sure you want to delete this done?');
                 var id = $(this).attr('data-delete');
-                $.ajax({
-                    url: app.urls.dones + id,
-                    type: 'DELETE',
-                    success: _this.show
-                });
+                if (_confirm == true) {
+                    $.ajax({
+                        url: app.urls.dones + id,
+                        type: 'DELETE',
+                        success: _this.show
+                    });
+                };
                 return false;
             });
         };
@@ -61,7 +64,7 @@
     LoginLogout = function(app) {
         var _this = this,
             _ok_feedback = function() {
-            $('#content').html('Thanks, your account has been created. <br><br><br> You can <a href="/">login</a> now');
+            $('#content').html('<div class="alert alert-success">Thanks, your account has been created. <br><br><br> You can <a href="/">login</a> now</div>');
         };
 
         this.render = function() {
